@@ -18,9 +18,6 @@ class dstat_plugin(dstat):
 
     def extract(self):
         l = self.splitline()
-        self.val['virtual'] = int(l[0]) * pagesize / 1024
-        self.val['resident'] = int(l[1]) * pagesize / 1024
-        self.val['shared'] = int(l[2]) * pagesize / 1024
-
-
-    
+        self.val['virtual'] = int(l[0]) * pagesize
+        self.val['resident'] = int(l[1]) * pagesize
+        self.val['shared'] = int(l[2]) * pagesize
