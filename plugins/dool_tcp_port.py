@@ -8,8 +8,6 @@ class dstat_plugin(dstat):
     Shows statistics on tcp port defined by DOOL_TCP_PORT environment variable.
     """
 
-    from itertools import islice
-
     monitored_port = 0
 
     def __init__(self):
@@ -32,4 +30,3 @@ class dstat_plugin(dstat):
                 if (st == 1): # TCP_ESTABLISHED
                     established_count += 1
         self.val['established'] = established_count
-                
