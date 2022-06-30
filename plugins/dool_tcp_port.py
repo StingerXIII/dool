@@ -1,6 +1,5 @@
 ### Author: George Shvartsman <stinger.xiii@gmail.com>
 
-
 class dstat_plugin(dstat):
     """
     Connection count on TCP port. 
