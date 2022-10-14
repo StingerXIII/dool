@@ -38,7 +38,7 @@ try:
 except ImportError:
     from collections import Sequence # Python 2.x
 
-VERSION = '1.0.0'
+VERSION = '1.1.0'
 
 theme = { 'default': '' }
 
@@ -284,10 +284,10 @@ class Options:
         showplugins()
 
     def usage(self):
-        print('Usage: dool [-afv] [options..] [delay [count]]')
+        print('Usage: dool [options] [delay] [count]')
 
     def help(self):
-        print('''Versatile tool for generating system resource statistics)
+        print('''\nVersatile tool for generating system resource statistics
 
 Dool options:
   -c, --cpu                enable cpu stats
@@ -332,6 +332,7 @@ Dool options:
   -v, --vmstat             equals -pmgdsc -D total
 
   --bits                   force bits for values expressed in bytes
+  --bytes                  force bytes for output measurements
   --float                  force float values on screen
   --integer                force integer values on screen
 
@@ -510,7 +511,7 @@ class dstat:
 
                 # If it's not the last one
                 if i + 1 != len(self.name):
-                    ret += theme['frame'] + char['colon'] + ansi['reset']
+                    ret += theme['subtitle'] + char['space'] + ansi['reset']
                 else:
                     ret += ansi['reset']
 
@@ -580,7 +581,7 @@ class dstat:
 
             if isinstance(self.val[name], Sequence) and not isinstance(self.val[name], string_types):
                 line = line + cprintlist(self.val[name], ctype, self.width, scale)
-                sep  = theme['frame'] + char['colon']
+                sep  = theme['subtitle'] + char['colon'] + ansi['reset']
 
                 if i + 1 != len(self.vars):
                     line = line + sep
@@ -1360,8 +1361,8 @@ class dool_lock(dstat):
 class dool_mem(dstat):
     def __init__(self):
         self.name = 'memory usage'
-        self.nick = ('used', 'free', 'buff', 'cach')
-        self.vars = ('MemUsed', 'MemFree', 'Buffers', 'Cached')
+        self.nick = ('used', 'free', 'cach', 'avai')
+        self.vars = ('MemUsed', 'MemFree', 'Cached', 'MemAvailable')
         self.open('/proc/meminfo')
 
     def extract(self):
@@ -1375,7 +1376,11 @@ class dool_mem(dstat):
             if name in adv_extract_vars:
                 adv_val[name] = int(l[1]) * 1024.0
 
-        self.val['MemUsed'] = adv_val['MemTotal'] - self.val['MemFree'] - self.val['Buffers'] - self.val['Cached'] - adv_val['SReclaimable'] + adv_val['Shmem']
+        # Original math
+        #self.val['MemUsed'] = adv_val['MemTotal'] - self.val['MemFree'] - self.val['Buffers'] - self.val['Cached'] - adv_val['SReclaimable'] + adv_val['Shmem']
+
+        # New math that is closer to the `free` output
+        self.val['MemUsed'] = adv_val['MemTotal'] - self.val['MemFree'] - self.val['Cached'] - adv_val['SReclaimable']
 
 class dool_mem_adv(dool_mem):
     """
@@ -1879,6 +1884,7 @@ char_box_draw = {
     'pipe'       : u'\u2502',
     'dash'       : u'\u2504',
     'title_sep'  : u'\u252c',
+    'colon'      : u'\u250a',
 }
 
 def set_theme():
@@ -2651,9 +2657,8 @@ def main():
         op.color = gettermcolor()
 
     if not op.use_ascii:
-        char['dash']      = char_box_draw['dash']
-        char['pipe']      = char_box_draw['pipe']
-        char['title_sep'] = char_box_draw['title_sep']
+        for key in char_box_draw:
+            char[key] = char_box_draw[key]
 
     ### Prepare CSV output file (unbuffered)
     if op.output:
