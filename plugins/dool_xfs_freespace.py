@@ -1,6 +1,6 @@
 ### Author: George Shvartsman <stinger.xiii@gmail.com>
 
-class dstat_plugin(dstat):
+class dool_plugin(dool):
     """
     Shows XFS free space by allocation groups.
     

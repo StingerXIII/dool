@@ -45,7 +45,7 @@ gauge = {
     'Threads_running'                 : 1,
     }
 
-class dstat_plugin(dstat):
+class dool_plugin(dool):
     """
     mysql5-innodb, mysql5-innodb-basic, mysql5-innodb-extra
 

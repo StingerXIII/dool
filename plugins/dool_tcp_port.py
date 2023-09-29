@@ -1,6 +1,6 @@
 ### Author: George Shvartsman <stinger.xiii@gmail.com>
 
-class dstat_plugin(dool):
+class dool_plugin(dool):
     """
     Connection count on TCP port. 
     
