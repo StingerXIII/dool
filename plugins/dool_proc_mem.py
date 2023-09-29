@@ -1,7 +1,7 @@
 ### Author: George Shvartsman <stinger.xiii@gmail.com>
 ### Modified from dool-mem: Dag Wieers <dag$wieers,com>
 
-class dstat_plugin(dstat):
+class dstat_plugin(dool):
     """
     Process allocated memory size. 
     
