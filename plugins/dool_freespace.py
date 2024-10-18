@@ -16,7 +16,13 @@ class dool_plugin(dool):
     def vars(self):
         ret = []
 
-        mystr = os.environ.get('DOOL_FREESPACE_MOUNT_POINTS','').strip()
+        # Get the mountpoint string from the optional param at the CLI
+        # or fallback to the environment variable.
+        # If there is NO string we default to showing all mount points
+        global op
+        mystr = op.opt_params.get('freespace', '')
+        if not mystr:
+            mystr = os.environ.get('DOOL_FREESPACE_MOUNT_POINTS','').strip()
 
         if (len(mystr) > 0):
             mp = mystr.split(',')
@@ -50,6 +56,13 @@ class dool_plugin(dool):
 
             if res[0] == 0: continue ### Skip zero block filesystems
             ret.append(mount_point)
+
+        # Make sure we found all the requested mount points
+        missing_mps = array_diff(mp, ret)
+
+        for item in missing_mps:
+            msg = text_color(214, "Warning: unable to find mount point %s in /etc/mtab" % (item));
+            print(msg)
 
         return ret
 

@@ -1,6 +1,6 @@
 = dool(1)
 Scott Baker <scott@perturb.org>
-v1.1.0, June 2023
+v1.3.0, October 2024
 
 == NAME
 dool - versatile tool for generating system resource statistics
@@ -194,6 +194,9 @@ Possible internal stats are::
 --display::
     output tabular data to the display. Useful in conjunction with *--output*
 	to display on screen and write to a file at the same time
+
+--dstat::
+    enable legacy Dstat output mode
 
 --profile::
     show profiling statistics when exiting dool

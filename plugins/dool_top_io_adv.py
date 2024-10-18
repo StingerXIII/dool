@@ -6,9 +6,9 @@
 class dool_plugin(dool):
 	def __init__(self):
 		self.name    = 'most expensive i/o process'
-		self.vars    = ('process               pid    read  writ  cpu ',)
+		self.vars    = ('process                  pid  read  writ   cpu',)
 		self.type    = 's'
-		self.width   = 45
+		self.width   = 46
 		self.scale   = 0
 		self.pidset1 = {}
 
@@ -56,13 +56,17 @@ class dool_plugin(dool):
 			write_usage = (self.pidset2[pid]['wchar:'] - self.pidset1[pid]['wchar:']) * 1.0 / elapsed
 			usage       = read_usage + write_usage
 
+			# Make sure the name isn't too long
+			pid_name = getnamebypid(pid, name)
+			pid_name = pid_name[0:20]
+
 			### Get the process that spends the most jiffies
 			if usage > self.val['usage']:
 				self.val['usage']       = usage
 				self.val['read_usage']  = read_usage
 				self.val['write_usage'] = write_usage
 				self.val['pid']         = pid
-				self.val['name']        = getnamebypid(pid, name)
+				self.val['name']        = pid_name
 				self.val['cpu_usage']   = cpu_usage
 
 		if step == op.delay:
@@ -71,7 +75,7 @@ class dool_plugin(dool):
 		if self.val['usage'] != 0.0:
 			#self.output = '%-*s%s%-5s%s%s%s%s%%' % (self.width-14-len(pid), self.val['name'][0:self.width-14-len(pid)], color['darkblue'], self.val['pid'], cprint(self.val['read_usage'], 'd', 5, 1024), cprint(self.val['write_usage'], 'd', 5, 1024), cprint(self.val['cpu_usage'], 'f', 3, 34), color['darkgray'])
 
-			pid_str   = color['darkblue'] + ("%-6s" % self.val['pid']) + ansi['reset']
+			pid_str   = color['darkblue'] + ("%7s" % self.val['pid']) + ansi['reset']
 			read_str  = cprint(self.val['read_usage'] , 'd', 5, 1024)
 			write_str = cprint(self.val['write_usage'], 'd', 5, 1024)
 			cpu_str   = cprint(self.val['cpu_usage']  , 'f', 4, 34)
